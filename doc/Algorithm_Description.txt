@@ -1,0 +1,30 @@
+
+Init.
+  1. The first member of the group choose the list of members(LoM) for the group.
+  2. After choosing the LoM, the 1st node forward this list and its own ip address to the next member of the group (the list is sorted by phone number)
+  3. Upon receiving the LoM from the previous node, one can accept or reject to join the group. In order to join, the current node must append his own ip address to the LoM and forward the LoM to the next member in the list and forward it to the next member. To reject, the current node only forwards the LoM but not appending his ip.
+  4. The above step is repeated until the node before the 1st node received the LoM. After receiving the LoM from the previous node, the last node append a fake joining time (which is used to build the map) and establish 3G connections to all nodes in the list to send the completed LoM which contains everyone who accept to join the group. This last node also send a signal to end the initialize stage to all nodes.
+  SMS structure: phone number (4 bytes) + ip address (3 bytes)
+
+Information Exchange
+  Parameter k >= 1.
+  1. To exchange the location information, a node can propagate all the information it has to everyone in the same row and same column.
+  2. When the given parameter k > 1. Besides the node in the same row/col, a node also send the information to the nodes in k rows/cols next to it. e.g. in the given figure and k = 2, 01 will send its info to 00, 04, 09, 03, 02, 05, 10, 07, 06, 14, 13.
+                    00 01 04 09
+                    03 02 05 10
+                    08 07 06 11
+                    15 14 13 12
+  The message sent by each node is an array where each value contains the phone number, the GPS corresponding coordinate, and the timestamp of the coordinate.
+  A node only propagate a piece of information if it is different from the previous time it sent out that information.
+
+Joining group:
+  When a new node want to join the group, it send out an SMS containing its ip and the current timestamp to any node in the group (probably one of its friends), the information of the new node will then be propagate through the network using the following method i.e. every nodes who receive this information will add the new node to the map and broadcast that information once using the above algorithm. The new node also receive a list of node in the network to build its own map.
+
+Parting group:
+  When a node want to leave the group, it must broadcast the information that it want to leave the group to all the nodes in the same row and column. That piece of information will then be propagated through the network. Every node who receive the information that one node leave the group will then rebroadcast that information once then build the new map with the leaving node missing from the map. The new map will then be used for propagating location information.
+  Another scenario is when a node is offline from the 
+
+Going online:
+
+Going offline:
+
